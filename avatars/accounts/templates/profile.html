@@ -1,0 +1,23 @@
+{%extends 'base.html'%}
+
+{%block title%}
+<h1>Profile</h1>
+
+<p>User username: {{user.username}}</p>
+<p>User first name: {{user.first_name}}</p>
+<p>User last name: {{user.last_name}}</p>
+<p> <strong> Title: {{film.title}} </strong></p>
+{%endblock%}
+
+{%block content%}
+
+<form method="post" action="{% url 'profile' film.id %}">
+    {% csrf_token %}
+    {% if film in request.user.user_profile.favorite_film.all %}
+      <button type="submit">Remove from favorites</button>
+    {% else %}
+      <button type="submit">Add to favorites</button>
+    {% endif %}
+  </form>
+
+{%endblock%}

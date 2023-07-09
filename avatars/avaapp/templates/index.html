@@ -1,0 +1,31 @@
+{%extends 'base.html'%}
+{%load static%} 
+
+        {%block content%} 
+        <div id="row-main">
+            <p class="title"> WHO ARE YOU TODAY?</p>
+            <div id="big-content">
+                <div id="big-card">
+                    <div class="big-element-img">
+                        <img id ="expandedImg-details">
+                    </div>
+                    <div class="big-element-img">
+                        <img id ="expandedImg-eyes">
+                    </div>
+                    <div class="big-element-img">
+                        <img id ="expandedImg-hair">
+                    </div>
+                    <div class="big-element-img">
+                        <img id ="expandedImg-face">
+                    </div>
+                </div>
+            </div>
+            <div id="content">
+
+            </div>
+            <div id="error"></div>
+            <button type="button" class="button" id ="next">Next</button>
+            <button type="button" class="button" id ="save">Save</button>
+        </div>
+    </div>
+    {%endblock content%}
