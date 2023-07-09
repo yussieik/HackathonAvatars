@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import Avatar, Author, Face, Color, Hair, Style, Eyes, Details, Category
@@ -52,4 +52,9 @@ class EyesListView(ListAPIView):
 class DetailsListView(ListAPIView):
     queryset = Details.objects.all()
     serializer_class = DetailsSerializer
+    permission_classes = (AllowAny, )
+    
+class AvatarsCreateListView(CreateAPIView):
+    queryset = Avatar.objects.all()
+    serializer_class = AvatarSerializer
     permission_classes = (AllowAny, )

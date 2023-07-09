@@ -1,7 +1,7 @@
 const content = document.getElementById('content');
-const errorNote = document.getElementById("error")
 const buttonNext = document.getElementById('next')
 const buttonSave = document.getElementById('save')
+const gallery = document.getElementById('gallery')
 const expandedImgFace = document.getElementById("expandedImg-face")
 
 expandedImgFace.src='avaapp/static/img/faces/who-face.svg';
@@ -11,18 +11,27 @@ const expandedImgEyes = document.getElementById("expandedImg-eyes")
 const expandedImgDetails = document.getElementById("expandedImg-details")
 
 buttonNext.addEventListener('click', nextStep)
+buttonSave.addEventListener('click', saveAvatar)
 
 let counter = 0;
-
 
 async function getFacesList() {
     try{
         const response = await fetch('/api/faces/');
         if(response.ok){
             const faces = await response.json();
+
+            const faceData = faces.map(face => ({
+                id: face['id'],
+                imgName: face['imgName'],
+                imgUrl: face['imgUrl'],
+                category: face['category'],
+            }));
+
             for(let i =0; i<faces.length; i++){
-                createElementChoice(faces[i]['imgUrl'])
+                createElementChoice(faces[i]['imgUrl'], faces[i]['id'], faces[i]['imgName'])
             }     
+            return faceData
         }
         else{
             throw new Error('OH NO! ERROR!')
@@ -32,16 +41,32 @@ async function getFacesList() {
         console.log(error);
     }  
 }
-let faces=getFacesList()
+const faceData = getFacesList()
+
+//a s etim chto? rabotaet, no kuda?
+
+// faceData.then((result) =>{
+//     console.log(result[0])
+// })
+
 
 async function getHairList() {
     try{
         const response = await fetch('/api/hair/');
         if(response.ok){
             const hair = await response.json();
+
+            const hairData = hair.map(hair => ({
+                id: hair['id'],
+                imgName: hair['imgName'],
+                imgUrl: hair['imgUrl'],
+                category: hair['category'],
+            }));
+
             for(let i =0; i<hair.length; i++){
-                createElementChoice(hair[i]['imgUrl'])
-            }     
+                createElementChoice(hair[i]['imgUrl'], hair[i]['id'], hair[i]['imgName'])
+            }
+            return hairData
         }
         else{
             throw new Error('OH NO! ERROR!')
@@ -57,9 +82,19 @@ async function getEyesList() {
         const response = await fetch('/api/eyes/');
         if(response.ok){
             const eyes = await response.json();
+
+            const eyesData = eyes.map(face => ({
+                id: eyes['id'],
+                imgName: eyes['imgName'],
+                imgUrl: eyes['imgUrl'],
+                category: eyes['category'],
+            }));
+
             for(let i =0; i<eyes.length; i++){
-                createElementChoice(eyes[i]['imgUrl'])
-            }     
+                createElementChoice(eyes[i]['imgUrl'], eyes[i]['id'], eyes[i]['imgName'])
+            } 
+
+            return eyesData
         }
         else{
             throw new Error('OH NO! ERROR!')
@@ -75,9 +110,19 @@ async function getDetailsList() {
         const response = await fetch('/api/details/');
         if(response.ok){
             const details = await response.json();
+
+            const detailsData = details.map(face => ({
+                id: details['id'],
+                imgName: details['imgName'],
+                imgUrl: details['imgUrl'],
+                category: details['category'],
+            }));
+
             for(let i =0; i<details.length; i++){
-                createElementChoice(details[i]['imgUrl'])
-            }     
+                createElementChoice(details[i]['imgUrl'], details[i]['id'], details[i]['imgName'])
+            }   
+            
+            return detailsData
         }
         else{
             throw new Error('OH NO! ERROR!')
@@ -92,9 +137,31 @@ async function getAvatarsList() {
     try{
         const response = await fetch('/api/avatars/');
         if(response.ok){
+            const arrayData =[]
             const avatars = await response.json();
-            console.log(avatars);
-            console.log(avatars[0]['avatarName']);          
+            for(let i = 0; i<avatars.length; i++){
+                const avatarData = {
+                    avatarName: avatars[i]['avatarName'],
+                    author: avatars[i]['author'],
+                    id: avatars[i]['id'],
+                    face: avatars[i]['face'],
+                    hair: avatars[i]['hair'],
+                    eyes: avatars[i]['eyes'],
+                    details: avatars[i]['details'],
+                  };
+                  console.log(avatarData);
+                //   arrayData.push(avatarData)
+                //   return arrayData; 
+            }
+            // console.log(avatars);
+            // console.log(avatars[0]['avatarName']);
+            // console.log(avatars[0]['author']);
+            // console.log(avatars[0]['id']);
+            // console.log(avatars[0]['face']);
+            // console.log(avatars[0]['hair']);
+            // console.log(avatars[0]['eyes']);
+            // console.log(avatars[0]['details']);
+            
         }
         else{
             throw new Error('What is wrong now?')
@@ -126,16 +193,20 @@ async function getUsersList() {
 // getUsersList()
 
 
-function createElementChoice(elementUrl){
+function createElementChoice(elementUrl, id, imageName){
     const img_address = `avaapp/${elementUrl}`;
     const divCard = document.createElement('div');
     const divCardContent = document.createElement('div');
-    console.log(expandedImgFace.src);
     const elementImg = document.createElement('img');
+    elementImg.classList.add('small-img');
     elementImg.src = img_address;
     elementImg.style.width ='100px'
+    elementImg.style.backgroundSize = "100px"
+    elementImg.style.backgroundImage ="url('" + expandedImgFace.src + "')"
+    elementImg.setAttribute('imageId', id)
+    elementImg.setAttribute('name', imageName)
     divCard.classList.add('.card');
-    divCardContent.classList.add('.element-img');
+    divCardContent.classList.add('element-img');
     divCardContent.appendChild(elementImg);
     divCard.appendChild(divCardContent)
     content.appendChild(divCard)
@@ -143,63 +214,78 @@ function createElementChoice(elementUrl){
 }
 
 
-function getSelected(img, counter){
-    expandedImgFace.src=''
+function getSelected(img, counter){ 
     switch(counter){
-        case 1:
+        case 0:
+            expandedImgFace.src=''
             expandedImgFace.src = img.src
             break;
-        case 2:
-            // expandedImgHair.style.backgroundColor=rgba(34, 255, 237, 0);
+        case 1:
             expandedImgHair.src = img.src
-
             break;
-        case 3:
+        case 2:
             expandedImgEyes.src = img.src
             break;
-        default:
+        case 3:
             expandedImgDetails.src = img.src
+            break;
+        default:
+            expandedImgFace.src = img.src
             break;
     }
 }
 
 function nextStep(){
-    // if(counter==0){
-    //     if(expandedImgFace.src=='avaapp/static/img/faces/who-face.svg'){
-    //         errorNote.textContent = 'Choose a face'
-    //     }
-    // }
-    // else{
-        content.innerHTML = ''
-        errorNote.textContent = ''
-        counter++;
-        let miniImgs = document.querySelector('.element-img')
-        console.log(miniImgs)
-        // for(let i = 0; i < miniImgs.length; i++){
-        //     miniImg[i].src = expandedImg.src
-        // }
-        switch(counter){
-            case 1:
-                getHairList()
-                break;
-            case 2:
-                getEyesList()
-                break;
-            case 3:
-                getDetailsList()
-                break;
-            default:
-                getFacesList()
-                counter=0
-                break;
-        }
-    }
-// }
 
+    if(expandedImgFace.src.endsWith('/who-face.svg')){
+        expandedImgFace.src='avaapp/static/img/faces/green-face.svg';
+    }
+
+    content.innerHTML = ''
+    counter++;
+
+    switch(counter){
+        case 1:
+            getHairList()
+            
+            // const hairData = getHairList()
+
+            // hairData.then((result) =>{
+            //     console.log(result)
+            // })
+
+
+            break;
+        case 2:
+            getEyesList()
+            break;
+        case 3:
+            getDetailsList()
+            break;
+        default:
+            getFacesList()
+            counter=0
+            break;
+    }
+}
+
+
+function saveAvatar(){
+    const avatarObj = {
+        author:'Sara',
+
+        face: expandedImgFace.imageId,
+        hair: expandedImgHair.imageId,
+        eyes: expandedImgEyes.imageId,
+        details: expandedImgDetails.imageId
+}
+postJSON(avatarObj)
+    console.log(avatarObj);
+}
 
 async function postJSON(data) {
     try {
-      const response = await fetch("/api/avatars/", {
+      const response = await fetch("/api/create/", {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -216,14 +302,14 @@ async function postJSON(data) {
 
 
 
-function showAvatar(avatar){
-    const creator = avatar.author
-    const name = avatar.avatar_name
-    const face = avatar.face
-    const hair = avatar.hair
-    const eyes = avatar.eyes
-    const details = avatar.face
-}
+// function showAvatar(avatar){
+//     const creator = avatar.author
+//     const name = avatar.avatar_name
+//     const face = avatar.face
+//     const hair = avatar.hair
+//     const eyes = avatar.eyes
+//     const details = avatar.face
+// }
 
 
 
@@ -249,73 +335,61 @@ function searchAvatar(event){
       showCards()
     }
   
-  };
-  
+};
+
 // inputUser.addEventListener('input', searchAvatar);
 
-
-
-
-// const allElementData = Promise.all([categoryData, facesData, hairData, eyesData, detailsData])
-
-// allElementData
-//   .then(results => Promise.all(results.map(response => response.json())))
-//   .then(data => {
-
-//     console.log('Category: ', data[0]);
-//     console.log('Faces: ', data[1]);
-//     console.log('Hair: ', data[2]);
-//     console.log('Eyes: ', data[3]);
-//     console.log('Details: ', data[4]);
-//     // console.log(data[0][0]['category']);
-//     // const urls = data.map(response => response[0]);
-//     // console.log(urls);
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//   });
-
-
-// function select(event){
-//     const images = divContent.getElementsByTagName('img');
-//     for (let i = 0; i < images.length; i++) {
-//       images[i].classList.remove('selected');
-//     }
-
-//     const clickedImage = event.target;
-//     clickedImage.classList.add('selected');
+// redo for avatars
+// function showCards(){
+//     robots.forEach(element =>{
+//      let {id, name, username, email, image} = element;
+//      createCard(name, email, image);
+//     })
+  
 // }
 
+// // redo for avatars
 
-//     // Get data from api
-// const categoryData = fetch('/api/category/');
-// const facesData = fetch('/api/faces/');
-// const hairData = fetch('/api/hair/');
-// const eyesData = fetch('/api/eyes/');
-// const detailsData = fetch('/api/details/');
+// getAvatarsList()
 
-// // const colorsData = fetch('/api/colors/');
-// // const stylesData = fetch('/api/styles/');
 
-// function getElementsApi(){
-//     const allElementData = Promise.all([categoryData, facesData, hairData, eyesData, detailsData])
-//     allElementData
-//       .then(results => Promise.all(results.map(response => response.json())))
-//       .then(data => {return data})   
-//       .catch(error =>{console.error('Error:', error);
-//     });
-// }
-// async function getElementsArray(){
-// const elementsArrays = await getElementsApi()
-// const a = await console.log(elementsArrays)
-// }
-// // getElementsArray()
+function createAvatarCard(){
 
-// function displayInfo(){
-//     console.log('Category: ', allElementData[0]);
-//     console.log('Faces: ', allElementData[1]);
-//     console.log('Hair: ', allElementData[2]);
-//     console.log('Eyes: ', allElementData[3]);
-//     console.log('Details: ', allElementData[4]);
-// }
-// //   displayInfo(allElementData)
+    // create avatar name
+    const paragraphAvatarName = document.createElement('p');
+    paragraphAvatarName.classList.add('avatar-name');
+
+    const avatarNameText = document.createTextNode('lola');
+    paragraphAvatarName.appendChild(avatarNameText);
+
+    // create a card for display avatar
+    const divBigCard = document.createElement('div');
+    divBigCard.classList.add('big-card');
+
+    let arrayTest=['avaapp/static/img/faces/pink-face.svg', 'avaapp/static/img/hair/blond-hair.svg', 'avaapp/static/img/eyes/blue-eyes.svg', 'avaapp/static/img/details/moustache.svg',]
+
+    for(let imgUrl of arrayTest){
+    // create an element for images level-1
+    const divBigElementImg = document.createElement('div');
+    divBigElementImg.classList.add('big-element-img');
+
+    // create an image level-1
+    const bigExpandedImg = document.createElement('img');
+    bigExpandedImg.classList.add('big-final-img');
+    const srcUrl = imgUrl;
+    bigExpandedImg.setAttribute('src', srcUrl);
+
+
+    //create matreshka
+    divBigElementImg.appendChild(bigExpandedImg);
+    divBigCard.appendChild(divBigElementImg);
+    gallery.appendChild(divBigCard);
+    }
+
+}
+
+createAvatarCard()
+createAvatarCard()
+createAvatarCard()
+createAvatarCard()
+createAvatarCard()

@@ -20,4 +20,6 @@ urlpatterns = [
     path('api/eyes/', views.EyesListView.as_view(), name='eyes-list'),
     
     path('api/details/', views.DetailsListView.as_view(), name='details-list'),
+    
+    path('api/create/', views.AvatarsCreateListView.as_view(), name = 'avatar-create')
 ]

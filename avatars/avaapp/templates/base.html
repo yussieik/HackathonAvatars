@@ -11,30 +11,34 @@
     <title>Avatar Creator</title>
 </head>
 <body>
-    <nav><ul>
-        <input type="text" id="search" name="search" placeholder="search avatar">
+    <div class ="wrapper">
 
-        {%if request.user.is_authenticated%}
-        <li>{{user.username}}</li>
-        <li> | </li>
-        <a href="{% url 'logout' %}"> <li>Log out</li></a>
-        <li> | </li>
-        {% else %}
-        <a href="{% url 'login' %}"> <li>Log in</li></a>
-        <li> | </li>
-        {%endif%}
-        <a href="{% url 'signup' %}"> <li>Sign up</li></a>
+        <nav><ul>
+            <input type="text" id="search" name="search" placeholder="search avatar">
 
+            {%if request.user.is_authenticated%}
+            <li>{{user.username}}</li>
+            <li> | </li>
+            <a href="{% url 'logout' %}"> <li>Log out</li></a>
+            <li> | </li>
+            {% else %}
+            <a href="{% url 'login' %}"> <li>Log in</li></a>
+            <li> | </li>
+            {%endif%}
+            <a href="{% url 'signup' %}"> <li>Sign up</li></a>
 
-    </ul></nav>
-    <div class="container">
+        </ul></nav>
+
+    <main class="container">
         {%block content%} 
 
         {%endblock content%}
-    </div>
+        
+    </main>
 
     <footer>Project by Alla Nudelman in Development.Institute</footer>
-
+    
+</div>
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework', 
     'avaapp',
     'accounts',
+    # 'accounts.apps.accountsConfig',
 ]
 
 MIDDLEWARE = [
