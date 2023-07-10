@@ -6,11 +6,11 @@ from .forms import LoginForm, SignupForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-class LoginUserView(LoginView):
-    form_class = LoginForm
-    model = User
-    template_name = 'login.html'
-    success_url = reverse_lazy('profile')
+# class LoginUserView(LoginView):
+#     form_class = LoginForm
+#     model = User
+#     template_name = 'login.html'
+#     success_url = reverse_lazy('profile')
 
 class LogoutUserView(LogoutView):
     template_name = 'index.html'
@@ -26,3 +26,9 @@ class RegisterView(CreateView):
 def user_profile(request, id):
     user = User.objects.get(id=id)
     return render(request, 'profile.html', {'user': user})
+
+
+def sign_in(request):
+    if request.method == 'GET':
+        form = LoginForm()
+        return render(request, 'users/login.html', {'form': form})

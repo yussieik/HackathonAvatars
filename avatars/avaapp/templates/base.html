@@ -13,7 +13,9 @@
 <body>
     <div class ="wrapper">
 
-        <nav><ul>
+        <nav>
+            <div class="container">
+            <ul>
             <input type="text" id="search" name="search" placeholder="search avatar">
 
             {%if request.user.is_authenticated%}
@@ -27,7 +29,9 @@
             {%endif%}
             <a href="{% url 'signup' %}"> <li>Sign up</li></a>
 
-        </ul></nav>
+        </ul>
+    </div>
+    </nav>
 
     <main class="container">
         {%block content%} 

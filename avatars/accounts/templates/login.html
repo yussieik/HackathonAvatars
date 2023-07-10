@@ -4,7 +4,7 @@
 Log in 
 {%endblock%}
     {%block content%}
-    <form method="post">
+    <form method="POST" novalidate id="login">
         {%csrf_token%}
         {{form.as_p}}
         <button type="submit"> Log in </button>

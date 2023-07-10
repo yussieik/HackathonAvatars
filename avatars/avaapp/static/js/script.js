@@ -14,12 +14,17 @@ buttonNext.addEventListener('click', nextStep)
 buttonSave.addEventListener('click', saveAvatar)
 
 let counter = 0;
+const allData = {}
+
+let avatars=[];
+
 
 async function getFacesList() {
     try{
         const response = await fetch('/api/faces/');
         if(response.ok){
             const faces = await response.json();
+            allData.faces = faces
 
             const faceData = faces.map(face => ({
                 id: face['id'],
@@ -29,7 +34,7 @@ async function getFacesList() {
             }));
 
             for(let i =0; i<faces.length; i++){
-                createElementChoice(faces[i]['imgUrl'], faces[i]['id'], faces[i]['imgName'])
+                createElementChoice(faces[i]['imgUrl'], faces[i]['id'], faces[i]['imgName'], faces[i]['category'],)
             }     
             return faceData
         }
@@ -43,19 +48,13 @@ async function getFacesList() {
 }
 const faceData = getFacesList()
 
-//a s etim chto? rabotaet, no kuda?
-
-// faceData.then((result) =>{
-//     console.log(result[0])
-// })
-
 
 async function getHairList() {
     try{
         const response = await fetch('/api/hair/');
         if(response.ok){
             const hair = await response.json();
-
+            allData.hair = hair
             const hairData = hair.map(hair => ({
                 id: hair['id'],
                 imgName: hair['imgName'],
@@ -64,7 +63,7 @@ async function getHairList() {
             }));
 
             for(let i =0; i<hair.length; i++){
-                createElementChoice(hair[i]['imgUrl'], hair[i]['id'], hair[i]['imgName'])
+                createElementChoice(hair[i]['imgUrl'], hair[i]['id'], hair[i]['imgName'], hair[i]['category'])
             }
             return hairData
         }
@@ -82,6 +81,7 @@ async function getEyesList() {
         const response = await fetch('/api/eyes/');
         if(response.ok){
             const eyes = await response.json();
+            allData.eyes = eyes
 
             const eyesData = eyes.map(face => ({
                 id: eyes['id'],
@@ -91,7 +91,7 @@ async function getEyesList() {
             }));
 
             for(let i =0; i<eyes.length; i++){
-                createElementChoice(eyes[i]['imgUrl'], eyes[i]['id'], eyes[i]['imgName'])
+                createElementChoice(eyes[i]['imgUrl'], eyes[i]['id'], eyes[i]['imgName'], eyes[i]['category'])
             } 
 
             return eyesData
@@ -110,6 +110,7 @@ async function getDetailsList() {
         const response = await fetch('/api/details/');
         if(response.ok){
             const details = await response.json();
+            allData.details = details
 
             const detailsData = details.map(face => ({
                 id: details['id'],
@@ -119,7 +120,7 @@ async function getDetailsList() {
             }));
 
             for(let i =0; i<details.length; i++){
-                createElementChoice(details[i]['imgUrl'], details[i]['id'], details[i]['imgName'])
+                createElementChoice(details[i]['imgUrl'], details[i]['id'], details[i]['imgName'], details[i]['category'])
             }   
             
             return detailsData
@@ -133,35 +134,14 @@ async function getDetailsList() {
     }  
 }
 
+
+
 async function getAvatarsList() {
     try{
         const response = await fetch('/api/avatars/');
         if(response.ok){
-            const arrayData =[]
-            const avatars = await response.json();
-            for(let i = 0; i<avatars.length; i++){
-                const avatarData = {
-                    avatarName: avatars[i]['avatarName'],
-                    author: avatars[i]['author'],
-                    id: avatars[i]['id'],
-                    face: avatars[i]['face'],
-                    hair: avatars[i]['hair'],
-                    eyes: avatars[i]['eyes'],
-                    details: avatars[i]['details'],
-                  };
-                  console.log(avatarData);
-                //   arrayData.push(avatarData)
-                //   return arrayData; 
-            }
-            // console.log(avatars);
-            // console.log(avatars[0]['avatarName']);
-            // console.log(avatars[0]['author']);
-            // console.log(avatars[0]['id']);
-            // console.log(avatars[0]['face']);
-            // console.log(avatars[0]['hair']);
-            // console.log(avatars[0]['eyes']);
-            // console.log(avatars[0]['details']);
-            
+            avatars = await response.json();
+            // console.log("avatars", avatars);
         }
         else{
             throw new Error('What is wrong now?')
@@ -171,6 +151,15 @@ async function getAvatarsList() {
         console.log(error);
     }  
 }
+
+
+getAvatarsList().then(()=>{
+    for(let i=12; i<14; i++)
+    console.log("avatars", avatars[i])
+
+})
+
+
 
 async function getUsersList() {
     try{
@@ -189,12 +178,16 @@ async function getUsersList() {
     }  
 }
 
-// getAvatarsList()
+
+
 // getUsersList()
 
 
-function createElementChoice(elementUrl, id, imageName){
+function createElementChoice(elementUrl, id, imageName, category){
+    // console.log(category);
+    const arrDataSet = ["face", "hair", "eyes", "details"]
     const img_address = `avaapp/${elementUrl}`;
+    // console.log(img_address);
     const divCard = document.createElement('div');
     const divCardContent = document.createElement('div');
     const elementImg = document.createElement('img');
@@ -203,9 +196,9 @@ function createElementChoice(elementUrl, id, imageName){
     elementImg.style.width ='100px'
     elementImg.style.backgroundSize = "100px"
     elementImg.style.backgroundImage ="url('" + expandedImgFace.src + "')"
-    elementImg.setAttribute('imageId', id)
+    elementImg.setAttribute(`data-${arrDataSet[category-1]}`, id)
     elementImg.setAttribute('name', imageName)
-    divCard.classList.add('.card');
+    divCard.classList.add('card');
     divCardContent.classList.add('element-img');
     divCardContent.appendChild(elementImg);
     divCard.appendChild(divCardContent)
@@ -213,24 +206,29 @@ function createElementChoice(elementUrl, id, imageName){
     divCardContent.addEventListener('click', () => getSelected(elementImg, counter))
 }
 
-
 function getSelected(img, counter){ 
     switch(counter){
         case 0:
             expandedImgFace.src=''
             expandedImgFace.src = img.src
+            expandedImgFace.dataset.face = img.dataset.face 
             break;
         case 1:
+            // console.log(img);
             expandedImgHair.src = img.src
+            expandedImgHair.dataset.hair = img.dataset.hair 
             break;
         case 2:
             expandedImgEyes.src = img.src
+            expandedImgEyes.dataset.eyes = img.dataset.eyes 
             break;
         case 3:
             expandedImgDetails.src = img.src
+            expandedImgDetails.dataset.details = img.dataset.details 
             break;
         default:
             expandedImgFace.src = img.src
+            expandedImgFace.dataset.face = img.dataset.face 
             break;
     }
 }
@@ -247,14 +245,6 @@ function nextStep(){
     switch(counter){
         case 1:
             getHairList()
-            
-            // const hairData = getHairList()
-
-            // hairData.then((result) =>{
-            //     console.log(result)
-            // })
-
-
             break;
         case 2:
             getEyesList()
@@ -269,19 +259,70 @@ function nextStep(){
     }
 }
 
+console.log('AVARARS CREATED', avatars);
+
+console.log('ALLDATA CREATED', allData);
+
 
 function saveAvatar(){
-    const avatarObj = {
-        author:'Sara',
+    // console.log(allData);
+    // // console.log("avatars", avatars);
 
-        face: expandedImgFace.imageId,
-        hair: expandedImgHair.imageId,
-        eyes: expandedImgEyes.imageId,
-        details: expandedImgDetails.imageId
+    // let index = avatars[3]['face']
+
+    // console.log(`PRIMER URL FROM ALL DATA ELEMENTS: ${allData['hair'][index]['imgUrl']}`)
+    // // console.log(`PRIMER FACE ELEMENT FROM USER AVATAR: ${avatars[5]['face']}`);
+
+    // console.log(avatars.length);
+
+    // console.log('AVARARS CREATED', avatars);
+
+    // console.log('ALLDATA CREATED', allData);
+
+
+    for(let i = 0; i<avatars.length; i++){
+
+        let indexFace =avatars[i]['face'];
+        let indexHair = avatars[i]['hair'];
+        let indexEyes = avatars[i]['eyes'];
+        let indexDetails = avatars[i]['details'];
+        console.log(avatars[i])
+    
+        // console.log('FACE INDEX AVATAR 26', indexFace);
+        // console.log('HAIR INDEX AVATAR 26', indexHair);
+        // console.log('EYES INDEX AVATAR 26', indexEyes);
+        // console.log('DETAILS INDEX AVATAR 26', indexDetails);
+    
+    
+    
+        let imgUrlElementsSet = [
+            allData['faces'][indexFace-1]['imgUrl'], 
+            allData['hair'][indexHair-1]['imgUrl'], 
+            allData['eyes'][indexEyes-1]['imgUrl'], 
+            allData['details'][indexDetails-1]['imgUrl']]
+    
+            console.log(imgUrlElementsSet);
+        
+            getAvatarsList().then(() => createAvatarCard(imgUrlElementsSet))
+            
+
+    }
+
+
+
+    const avatarObj = {
+        avatarName: "Sweet lollypop",
+        author: 1,
+        face: expandedImgFace.dataset.face,
+        hair: expandedImgHair.dataset.hair,
+        eyes: expandedImgEyes.dataset.eyes,
+        details: expandedImgDetails.dataset.details
 }
-postJSON(avatarObj)
+    postJSON(avatarObj)
     console.log(avatarObj);
 }
+
+// console.log("avatars", avatars);
 
 async function postJSON(data) {
     try {
@@ -299,18 +340,6 @@ async function postJSON(data) {
       console.error("Error:", error);
     }
 }
-
-
-
-// function showAvatar(avatar){
-//     const creator = avatar.author
-//     const name = avatar.avatar_name
-//     const face = avatar.face
-//     const hair = avatar.hair
-//     const eyes = avatar.eyes
-//     const details = avatar.face
-// }
-
 
 
 function searchAvatar(event){
@@ -345,7 +374,7 @@ function searchAvatar(event){
 //      let {id, name, username, email, image} = element;
 //      createCard(name, email, image);
 //     })
-  
+
 // }
 
 // // redo for avatars
@@ -353,7 +382,8 @@ function searchAvatar(event){
 // getAvatarsList()
 
 
-function createAvatarCard(){
+
+function createAvatarCard(imgUrlElementsSet){
 
     // create avatar name
     const paragraphAvatarName = document.createElement('p');
@@ -366,30 +396,33 @@ function createAvatarCard(){
     const divBigCard = document.createElement('div');
     divBigCard.classList.add('big-card');
 
-    let arrayTest=['avaapp/static/img/faces/pink-face.svg', 'avaapp/static/img/hair/blond-hair.svg', 'avaapp/static/img/eyes/blue-eyes.svg', 'avaapp/static/img/details/moustache.svg',]
+    for(let imgUrl of imgUrlElementsSet){
+        // create an element for images level-1
+        const divBigElementImg = document.createElement('div');
+        divBigElementImg.classList.add('big-element-img');
 
-    for(let imgUrl of arrayTest){
-    // create an element for images level-1
-    const divBigElementImg = document.createElement('div');
-    divBigElementImg.classList.add('big-element-img');
-
-    // create an image level-1
-    const bigExpandedImg = document.createElement('img');
-    bigExpandedImg.classList.add('big-final-img');
-    const srcUrl = imgUrl;
-    bigExpandedImg.setAttribute('src', srcUrl);
+        // create an image level-1
+        const bigExpandedImg = document.createElement('img');
+        bigExpandedImg.classList.add('big-final-img');
+        const srcUrl = `avaapp/${imgUrl}`;
+        bigExpandedImg.setAttribute('src', srcUrl);
 
 
-    //create matreshka
-    divBigElementImg.appendChild(bigExpandedImg);
-    divBigCard.appendChild(divBigElementImg);
-    gallery.appendChild(divBigCard);
+        //create matreshka
+        divBigElementImg.appendChild(bigExpandedImg);
+        divBigCard.appendChild(divBigElementImg);
+        gallery.appendChild(divBigCard);
     }
 
 }
 
-createAvatarCard()
-createAvatarCard()
-createAvatarCard()
-createAvatarCard()
-createAvatarCard()
+// function crateGallery(imgUrlElementsSet, avatarArray){
+//     for(let i=0; i<avatarArray; i++){
+//         createAvatarCard(imgUrlElementsSet)
+//     }
+// }
+
+
+
+
+
