@@ -28,7 +28,7 @@ urlpatterns = [
     path('accounts/', include("django.contrib.auth.urls")),
     path('api/avaapp', include('avaapp.urls')),
     path('', include('avaapp.urls')),
-    path('profiles/', include('accounts.urls')),
+    path('', include('accounts.urls')),
 
     
 ]
