@@ -200,9 +200,46 @@ async function getDetailsList() {
 
 async function createAllData () {
     const all = await Promise.all([getFacesList(), getEyesList(),getHairList(), getDetailsList()])
-    // console.log("all", all);
+    const avatarsLi = await getAvatarsList()
+    const showGallery = createGallery(avatarsLi)
+    // .then((data) => {
+    //     console.log("data", data);
+    //     createGallery(data)
+    // })
+    console.log("all", all);
+    return all
 }
-createAllData()
+createAllData ()
+
+
+
+// const allDataElements = createAllData()
+//   .then(allData => {
+//     console.log("allData", allData);
+//     const d = {
+//         facesList: allData[0],
+//         eyesList: allData[1],
+//         hairList: allData[2],
+//         detailsList: allData[3]
+//     }
+//      facesList = allData[0];
+//     const eyesList = allData[1];
+//     const hairList = allData[2];
+//     const detailsList = allData[3];
+//     // console.log("facesList", facesList);
+//     // console.log("eyesList", eyesList);
+//     // console.log("hairList", hairList);
+//     // console.log("detailsList", detailsList);
+//   }).then((eldata)=>{
+//     return eldata
+//   })
+//   .catch(error => {
+//     console.error("An error occurred:", error);
+//   });
+
+// console.log(facesList)
+
+
 const detailsDataPromise = getDetailsList();
 
 
@@ -381,10 +418,10 @@ function createGallery(avatars){
     }
 }
 // createGallery()
-getAvatarsList().then((data) => {
-    // console.log("data", data);
-    createGallery(data)
-})
+// getAvatarsList().then((data) => {
+//     // console.log("data", data);
+//     createGallery(data)
+// })
 
 
 function saveAvatar(){
