@@ -103,7 +103,7 @@ async function getHairList() {
     }  
 }
 
-// const hairDataPromise = getHairList();
+const hairDataPromise = getHairList();
 
 
 function makeHair(hairData) {
@@ -150,7 +150,7 @@ async function getEyesList() {
 }
 
 
-// const eyesDataPromise = getEyesList();
+const eyesDataPromise = getEyesList();
 
 
 function makeEyes(eyesData) {
@@ -200,10 +200,10 @@ async function getDetailsList() {
 
 async function createAllData () {
     const all = await Promise.all([getFacesList(), getEyesList(),getHairList(), getDetailsList()])
-    console.log("all", all);
+    // console.log("all", all);
 }
 createAllData()
-// const detailsDataPromise = getDetailsList();
+const detailsDataPromise = getDetailsList();
 
 
 function makeDetails(detailsData) {
@@ -213,8 +213,6 @@ function makeDetails(detailsData) {
       createElementChoice(imgUrl, id, imgName, category);
     }
 }
-
-
 
 
 
@@ -267,7 +265,7 @@ async function getUsersList() {
 
 
 function createElementChoice(elementUrl, id, imageName, category){
-    console.log("in create element choice");
+    // console.log("in create element choice");
     // console.log(category);
     const arrDataSet = ["face", "hair", "eyes", "details"]
     const img_address = `avaapp/${elementUrl}`;
@@ -359,7 +357,7 @@ function getAvaName(){
 }
 
 function createGallery(avatars){
-    console.log("in create gallery", avatars);
+    // console.log("in create gallery", avatars);
     for(let i = 0; i<avatars.length; i++){
 
         let indexFace =avatars[i]['face'];
@@ -368,7 +366,7 @@ function createGallery(avatars){
         let indexDetails = avatars[i]['details'];
         let avatarName = avatars[i]['avatarName'];
         
-        console.log(allData)
+        // console.log(allData)
     
         let imgUrlElementsSet = [
             allData['faces'][indexFace-1]['imgUrl'], 
@@ -384,7 +382,7 @@ function createGallery(avatars){
 }
 // createGallery()
 getAvatarsList().then((data) => {
-    console.log("data", data);
+    // console.log("data", data);
     createGallery(data)
 })
 
@@ -403,9 +401,6 @@ function saveAvatar(){
 }
     postJSON(avatarObj)
     console.log(avatarObj);
-    // avaNameInput.value="";
-
-    // createGallery()
 }
 
 async function postJSON(data) {
