@@ -1,0 +1,20 @@
+Hello Alla,
+
+Here's the review of your Django project:
+
+- Your project's structure and organization are fairly good, but there are areas where improvements can be made. For instance, the 'druft' folder doesn't seem to have any relevance to the project. It's best to exclude unrelated items to keep the project clean and precise.
+
+- Code readability is well-maintained overall. However, a small issue to note is the use of capital letters in variable names like 'imgName'. Following Python's naming convention of using lower case letters for variable names will make your code more standardized and readable.
+
+- The usage of Django and Django REST Framework features is commendable. It's clear that you have a good grasp of the frameworks.
+
+- Your database models are well defined and logically constructed, and views and URLs have been well thought out and neatly executed.
+
+- Moving on to error handling and validation, it appears you have a basic structure in place, but it needs more work. You should consider adding more validations and try-except clauses to cover more edge cases in models, serializers, and views. This is crucial for the stability and reliability of your project.
+
+- A glaring omission is the absence of documentation. This is a crucial aspect of any project as it helps others understand your code. Consider documenting all functions and classes, as well as instructions for setup and usage.
+
+Overall, you've shown a strong understanding of Django and Django REST Framework. The key areas to work on would be error handling, validations, and adding comprehensive documentation. Keep practicing and improving!
+
+Best,
+Yossi.
